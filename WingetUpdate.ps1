@@ -17,13 +17,15 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
     } else {
         "&([ScriptBlock]::Create((irm https://raw.githubusercontent.com/itsh1r0/Windows-Setup/main/WingetUpdate.ps1))) $($argList -join ' ')"
     }
-    
+
+    # BỎ HẾT CHECK terminal/pwsh → ÉP CỨNG powershell.exe cổ điển
     $powershellExe = "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe"
 
-    Start-Process $powershellExe -ArgumentList "-ExecutionPolicy Bypass -NoProfile -Command `"$script`"" -Verb RunAs
+    Start-Process $powershellExe -ArgumentList "-ExecutionPolicy Bypass -NoProfile -Command `"$script`"" -Verb RunAs"
 
     break
 }
+
 
 
 New-Item -ItemType Directory -Path "$env:USERPROFILE\Downloads\Winget" -Force
