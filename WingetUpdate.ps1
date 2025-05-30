@@ -1,7 +1,7 @@
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-    Write-Output "Relaunch with Admin"
-    $argList = @()
+    Write-Output "Relaunching with Admin..."
 
+    $argList = @()
     $PSBoundParameters.GetEnumerator() | ForEach-Object {
         $argList += if ($_.Value -is [switch] -and $_.Value) {
             "-$($_.Key)"
@@ -17,11 +17,14 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
     } else {
         "&([ScriptBlock]::Create((irm https://raw.githubusercontent.com/itsh1r0/Windows-Setup/main/WingetUpdate.ps1))) $($argList -join ' ')"
     }
+    
+    $powershellExe = "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe"
 
-    Start-Process $processCmd -ArgumentList "--ExecutionPolicy Bypass -NoProfile -Command `"$script`"" -Verb RunAs
+    Start-Process $powershellExe -ArgumentList "-ExecutionPolicy Bypass -NoProfile -Command `"$script`"" -Verb RunAs
 
     break
 }
+
 
 New-Item -ItemType Directory -Path "$env:USERPROFILE\Downloads\Winget" -Force
 
