@@ -1,32 +1,8 @@
-if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-    Write-Output "Relaunching with Admin..."
-
-    $argList = @()
-    $PSBoundParameters.GetEnumerator() | ForEach-Object {
-        $argList += if ($_.Value -is [switch] -and $_.Value) {
-            "-$($_.Key)"
-        } elseif ($_.Value -is [array]) {
-            "-$($_.Key) $($_.Value -join ',')"
-        } elseif ($_.Value) {
-            "-$($_.Key) '$($_.Value)'"
-        }
-    }
-
-    $script = if ($PSCommandPath) {
-        "& { & `'$($PSCommandPath)`' $($argList -join ' ') }"
-    } else {
-        "&([ScriptBlock]::Create((irm https://raw.githubusercontent.com/itsh1r0/Windows-Setup/main/WingetUpdate.ps1))) $($argList -join ' ')"
-    }
-
-    # BỎ HẾT CHECK terminal/pwsh → ÉP CỨNG powershell.exe cổ điển
-    $powershellExe = "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe"
-
-    Start-Process $powershellExe -ArgumentList "-ExecutionPolicy Bypass -NoProfile -Command `"$script`"" -Verb RunAs"
-
-    break
+if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent().IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))) {
+    Write-Host "⚠ Relaunching with Admin..." -ForegroundColor Yellow
+    Start-Process "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -NoProfile -File `"$PSCommandPath`"" -Verb RunAs
+    exit
 }
-
-
 
 New-Item -ItemType Directory -Path "$env:USERPROFILE\Downloads\Winget" -Force
 
