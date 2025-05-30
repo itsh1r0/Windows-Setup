@@ -18,14 +18,7 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
         "&([ScriptBlock]::Create((irm https://raw.githubusercontent.com/itsh1r0/Windows-Setup/main/WingetUpdate.ps1))) $($argList -join ' ')"
     }
 
-    $powershellCmd = "powershell"
-    $processCmd = "powershell"
-
-    if ($processCmd -eq "wt.exe") {
-        Start-Process $processCmd -ArgumentList "$powershellCmd -ExecutionPolicy Bypass -NoProfile -Command `"$script`"" -Verb RunAs
-    } else {
-        Start-Process $processCmd -ArgumentList "-ExecutionPolicy Bypass -NoProfile -Command `"$script`"" -Verb RunAs
-    }
+    Start-Process $processCmd -ArgumentList "-ExecutionPolicy Bypass -NoProfile -Command `"$script`"" -Verb RunAs
 
     break
 }
