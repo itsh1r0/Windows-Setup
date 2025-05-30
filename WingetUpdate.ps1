@@ -4,9 +4,11 @@ $IsAdmin = $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administ
 
 if (-not $IsAdmin) {
     Write-Host "⚠ Relaunching with Admin..." -ForegroundColor Yellow
-    Start-Process "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -NoProfile -File `"$PSCommandPath`"" -Verb RunAs
+    $scriptBlock = "try { & `"$PSCommandPath`" } catch { Write-Host '❌ Script gặp lỗi: ' + $_.Exception.Message -ForegroundColor Red }; Read-Host '✅ Script hoàn tất (hoặc lỗi). Nhấn Enter để thoát.'"
+    Start-Process "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -NoProfile -Command `"$scriptBlock`"" -Verb RunAs
     exit
 }
+
 
 
 New-Item -ItemType Directory -Path "$env:USERPROFILE\Downloads\Winget" -Force
