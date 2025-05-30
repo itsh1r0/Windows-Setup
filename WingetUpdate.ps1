@@ -1,16 +1,3 @@
-$identity = [Security.Principal.WindowsIdentity]::GetCurrent()
-$principal = New-Object Security.Principal.WindowsPrincipal($identity)
-$IsAdmin = $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
-
-if (-not $IsAdmin) {
-    Write-Host "⚠ Relaunching with Admin..." -ForegroundColor Yellow
-    $scriptBlock = "try { & `"$PSCommandPath`" } catch { Write-Host '❌ Script gặp lỗi: ' + $_.Exception.Message -ForegroundColor Red }; Read-Host '✅ Script hoàn tất (hoặc lỗi). Nhấn Enter để thoát.'"
-    Start-Process "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -NoProfile -Command `"$scriptBlock`"" -Verb RunAs
-    exit
-}
-
-
-
 New-Item -ItemType Directory -Path "$env:USERPROFILE\Downloads\Winget" -Force
 
 $wingetBaseUrl = "https://github.com/microsoft/winget-cli/releases/latest/download/"
