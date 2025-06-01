@@ -1,0 +1,1 @@
+powershell -command "Enable-MMAgent -mc"
